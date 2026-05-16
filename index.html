@@ -160,7 +160,6 @@ const data = {
                pdf: TUTS+"CS496_Quantum_Tutorials_Solved.pdf" },
     extras:[
       ["Inline Diagrams Summary", SUMS+"CS496 Quantum Computing Inline Diagrams - No Study Inspection.pdf", null, "PDF"],
-      ["Tutorial — editable .docx", null, WORDS+"CS496_Quantum_Tutorials_Solved.docx", "DOCX"],
     ],
     slides:[
       "_000_Quantum  AGI Computing-Course Overview.pptx",
@@ -183,7 +182,6 @@ const data = {
                pdf: TUTS+"CS496_AI_Tutorials_Solved.pdf" },
     extras:[
       ["Inline Diagrams Summary", SUMS+"CS496 AI ML Agentic AI Inline Diagrams.pdf", null, "PDF"],
-      ["Tutorial — editable .docx", null, WORDS+"CS496_AI_Tutorials_Solved.docx", "DOCX"],
     ],
     slides:[
       "_010_Generative AI.pptx",
@@ -207,7 +205,6 @@ const data = {
                pdf: TUTS+"CS496_Blockchain_Tutorials_Solved.pdf" },
     extras:[
       ["Inline Diagrams Summary", SUMS+"CS496 Blockchain Inline Diagrams.pdf", null, "PDF"],
-      ["Tutorial — editable .docx", null, WORDS+"CS496_Blockchain_Tutorials_Solved.docx", "DOCX"],
     ],
     slides:[
       "_021_Blockchain Overview.pptx",
@@ -265,9 +262,9 @@ for (const key of Object.keys(data)){
     const id = `${key}-slide-${baseNoExt(f)}`;
     return `<li data-id="${id}">
       <input type="checkbox" data-id="${id}" />
-      <a class="name" data-pdf="${esc(pdf)}" data-title="${esc(prettyName(f))}" data-orig="${esc(SLIDES+f)}">${esc(prettyName(f))}</a>
-      <span class="pill">${ext(f)}</span>
-      <a class="raw" href="${encodeURI(SLIDES+f)}" download title="Download original">⬇</a>
+      <a class="name" data-pdf="${esc(pdf)}" data-title="${esc(prettyName(f))}" data-orig="${esc(pdf)}">${esc(prettyName(f))}</a>
+      <span class="pill">PDF</span>
+      <a class="raw" href="${encodeURI(pdf)}" download title="Download PDF">⬇</a>
     </li>`;
   }).join("");
 
