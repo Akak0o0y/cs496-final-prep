@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CS496 Final Exam — Study Portal</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#13161d; --panel-2:#181c25; --line:#262b36;
+    --text:#e6e8ee; --muted:#8a93a6; --accent:#7c9cff; --accent-2:#5cd1c1;
+    --quantum:#a78bfa; --ai:#5cd1c1; --blockchain:#f5a524; --ok:#22c55e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif;}
+  body.viewing{overflow:hidden}
+  a{color:inherit;text-decoration:none;cursor:pointer}
+  button{font:inherit}
+
+  header.top{
+    position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);
+    background:rgba(11,13,18,.85);border-bottom:1px solid var(--line);
+    padding:14px 24px;display:flex;align-items:center;gap:16px;
+  }
+  header.top h1{font-size:16px;margin:0;letter-spacing:.3px}
+  header.top .sub{color:var(--muted);font-size:12px}
+  header.top .progress{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+  .bar{width:220px;height:6px;background:#1d2230;border-radius:4px;overflow:hidden}
+  .bar > div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
+  .reset{font-size:11px;color:var(--muted);border:1px solid var(--line);background:transparent;
+    padding:5px 10px;border-radius:6px;cursor:pointer}
+  .reset:hover{color:var(--text);border-color:#3a4253}
+  main{padding:24px;max-width:1400px;margin:0 auto}
+  .modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:20px}
+  .module{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column}
+  .module > .mh{padding:18px 18px 6px;display:flex;flex-direction:column;gap:2px}
+  .module h2{margin:0;font-size:18px;display:flex;align-items:center;gap:10px}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .module.quantum .dot{background:var(--quantum)} .module.quantum h2{color:var(--quantum)}
+  .module.ai .dot{background:var(--ai)} .module.ai h2{color:var(--ai)}
+  .module.blockchain .dot{background:var(--blockchain)} .module.blockchain h2{color:var(--blockchain)}
+  .module .tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px}
+  .body{padding:14px 18px 18px;display:flex;flex-direction:column;gap:14px}
+
+  .guide-card{display:flex;align-items:center;gap:14px;padding:18px;border-radius:12px;
+    background:linear-gradient(135deg,#3a2f10,#1f1a08);border:1px solid #6b5418;transition:.18s;cursor:pointer;
+    box-shadow:0 0 0 1px rgba(245,165,36,.15) inset}
+  .guide-card:hover{transform:translateY(-1px);border-color:#a07a1f;box-shadow:0 8px 28px rgba(245,165,36,.18)}
+  .guide-card .icon{font-size:30px}
+  .guide-card .meta{flex:1;min-width:0}
+  .guide-card .title{font-size:17px;font-weight:700;color:#ffd58a}
+  .guide-card .sub{color:#b89868;font-size:12px;margin-top:2px}
+  .guide-card .open{font-size:12px;color:#ffd58a;border:1px solid #6b5418;padding:6px 10px;border-radius:8px}
+
+  .tutorial{display:flex;align-items:center;gap:14px;padding:18px;border-radius:12px;
+    background:linear-gradient(135deg,#1c2230,#161a23);border:1px solid #2b3346;transition:.18s;cursor:pointer}
+  .tutorial:hover{transform:translateY(-1px);border-color:#3d4a66;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .tutorial .icon{font-size:30px}
+  .tutorial .meta{flex:1;min-width:0}
+  .tutorial .title{font-size:17px;font-weight:600}
+  .tutorial .sub{color:var(--muted);font-size:12px;margin-top:2px}
+  .tutorial .open{font-size:12px;color:var(--accent);border:1px solid #2c3a5e;padding:6px 10px;border-radius:8px}
+
+  details{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  details > summary{list-style:none;cursor:pointer;padding:11px 14px;font-size:13px;
+    display:flex;align-items:center;gap:8px;color:var(--text);}
+  summary::-webkit-details-marker{display:none}
+  details[open] > summary{border-bottom:1px solid var(--line)}
+  summary .count{margin-left:auto;font-size:11px;color:var(--muted)}
+  summary .chev{transition:.2s;color:var(--muted)}
+  details[open] summary .chev{transform:rotate(90deg)}
+
+  ul.items{list-style:none;margin:0;padding:6px 6px}
+  ul.items li{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:13px}
+  ul.items li:hover{background:#1f2533}
+  ul.items li a.name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#cbd2e0}
+  ul.items li a.name:hover{color:var(--accent)}
+  ul.items li .pill{font-size:10px;color:var(--muted);border:1px solid var(--line);padding:2px 6px;border-radius:999px;text-transform:uppercase;letter-spacing:.6px}
+  ul.items li .raw{font-size:11px;color:var(--muted);opacity:.7;padding:2px 6px}
+  ul.items li .raw:hover{opacity:1;color:var(--accent)}
+
+  input[type=checkbox]{appearance:none;width:16px;height:16px;border:1.5px solid #3a4253;border-radius:4px;
+    cursor:pointer;display:inline-grid;place-content:center;background:transparent;flex-shrink:0}
+  input[type=checkbox]:hover{border-color:#5b6883}
+  input[type=checkbox]:checked{background:var(--ok);border-color:var(--ok)}
+  input[type=checkbox]:checked::after{content:"✓";color:#0b0d12;font-size:11px;font-weight:800;line-height:1}
+  li.done a.name{color:#5b6883;text-decoration:line-through}
+
+  .videos{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;padding:10px}
+  .vid{position:relative;background:#11141b;border:1px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;
+    display:flex;flex-direction:column;gap:6px;transition:.15s}
+  .vid:hover{border-color:#3d4a66;transform:translateY(-1px)}
+  .vid .num{font-size:10px;color:var(--blockchain);font-weight:700;letter-spacing:1px}
+  .vid .name{font-size:12px;color:#cbd2e0;line-height:1.35}
+  .vid .play{position:absolute;top:8px;right:8px;background:#1d2230;border:1px solid var(--line);
+    width:22px;height:22px;border-radius:50%;display:grid;place-content:center;font-size:10px;color:var(--blockchain)}
+  .vid input{position:absolute;bottom:8px;right:8px}
+
+  #viewer{position:fixed;inset:0;background:#0b0d12;display:none;flex-direction:column;z-index:50}
+  #viewer.on{display:flex}
+  #viewer .vh{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);background:#0e1117;flex-shrink:0}
+  #viewer .vh .t{font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  #viewer .vh button{background:transparent;border:1px solid var(--line);color:var(--text);
+    padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+  #viewer .vh button:hover{border-color:#3a4253;background:#1a1f2c}
+  #viewer .stage{flex:1;background:#000;position:relative}
+  #viewer iframe, #viewer video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+
+  footer{padding:30px 24px;text-align:center;color:var(--muted);font-size:11px}
+  code{background:#1a1f2c;padding:1px 5px;border-radius:4px;font-size:11px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>CS496 Final Exam — Study Portal</h1>
+    <div class="sub">Tutorials first · everything inline · progress saved</div>
+  </div>
+  <div class="progress">
+    <span id="pct">0%</span>
+    <div class="bar"><div id="barFill"></div></div>
+    <button class="reset" onclick="resetAll()">Reset</button>
+  </div>
+</header>
+
+<main>
+  <div id="serverWarn" style="display:none;background:#3a1f1f;border:1px solid #5a2b2b;color:#ffb4b4;padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:13px">
+    ⚠ You opened this file directly (file://). Inline PDF/video won't work in Chrome. Double-click <code>start_server.bat</code> and open <code>http://localhost:8000</code>.
+  </div>
+  <div class="modules" id="modules"></div>
+</main>
+
+<div id="viewer">
+  <div class="vh">
+    <span class="t" id="vTitle"></span>
+    <button onclick="downloadCurrent()">Download original</button>
+    <button onclick="closeViewer()">Close ✕ (Esc)</button>
+  </div>
+  <div class="stage" id="vStage"></div>
+</div>
+
+<footer>Progress saved in browser (localStorage). PDFs auto-generated in <code>_pdf/</code> from your .pptx/.docx.</footer>
+
+<script>
+const SLIDES = "CS496 Slides/";
+const SUMS   = "Sum from slides/";
+const TUTS   = "tutorial soltion with explantion/";
+const WORDS  = "tutorial soltion with explantion/word files/";
+const VIDS   = "Block Chain Videos/";
+const PDFDIR = "_pdf/";
+
+const data = {
+  quantum: {
+    name:"Quantum Computing", tag:"Module 1 · Slides 000–009",
+    guide:"_guides/viewer.html?file=quantum.md",
+    tutorial:{ title:"Quantum Tutorials — Solved + Explained",
+               sub:"PRIMARY · highest-yield review",
+               pdf: TUTS+"CS496_Quantum_Tutorials_Solved.pdf" },
+    extras:[
+      ["Inline Diagrams Summary", SUMS+"CS496 Quantum Computing Inline Diagrams - No Study Inspection.pdf", null, "PDF"],
+      ["Tutorial — editable .docx", null, WORDS+"CS496_Quantum_Tutorials_Solved.docx", "DOCX"],
+    ],
+    slides:[
+      "_000_Quantum  AGI Computing-Course Overview.pptx",
+      "_001_Principles and Roots of Quatum Computing.pptx",
+      "_002_Quatum Gates and Operators Jan 2026-updated.pptx",
+      "_003_Entanglement.-Bell States.pptx",
+      "_004_Quantum Teleportation-2026-updated.pptx",
+      "_005_Shor Integer Factorization Algorithm.pptx",
+      "_006_The Quantum Fourier Transform (QFT).pptx",
+      "_007_Grover’s Algoritm-Jan 2026.pptx",
+      "_008_Deutsch-Jozsa Algorithm-Revisited.pptx",
+      "_009_Ripple Addaer -Quantum.pptx",
+    ],
+  },
+  ai: {
+    name:"AI / Agentic AI", tag:"Module 2 · Slides 010–020",
+    guide:"_guides/viewer.html?file=ai.md",
+    tutorial:{ title:"AI Tutorials — Solved + Explained",
+               sub:"PRIMARY · highest-yield review",
+               pdf: TUTS+"CS496_AI_Tutorials_Solved.pdf" },
+    extras:[
+      ["Inline Diagrams Summary", SUMS+"CS496 AI ML Agentic AI Inline Diagrams.pdf", null, "PDF"],
+      ["Tutorial — editable .docx", null, WORDS+"CS496_AI_Tutorials_Solved.docx", "DOCX"],
+    ],
+    slides:[
+      "_010_Generative AI.pptx",
+      "_011_Getting Started With LangChain.pptx",
+      "_012_MLP-How it Works -(MultiLayer Perceptrons MLP) Example.pptx",
+      "_013_The Context-Machine Learning - Overview.pptx",
+      "_014_The Agentic AI  Revolution.pptx",
+      "_015_Demo -Cognitive Loop-LangChain Comprehensive Example-2 .docx",
+      "_016_LnagChain Multiagent.docx",
+      "_017_Autogen Single Agent Formatted.docx",
+      "_018_AutoGen MultiAgent.docx",
+      "_019_Crew Single Agent Formatted.docx",
+      "_020_CrewAI  MultiAgent.docx",
+    ],
+  },
+  blockchain: {
+    name:"Blockchain", tag:"Module 3 · Slides 021–029 + videos",
+    guide:"_guides/viewer.html?file=blockchain.md",
+    tutorial:{ title:"Blockchain Tutorials — Solved + Explained",
+               sub:"PRIMARY · highest-yield review",
+               pdf: TUTS+"CS496_Blockchain_Tutorials_Solved.pdf" },
+    extras:[
+      ["Inline Diagrams Summary", SUMS+"CS496 Blockchain Inline Diagrams.pdf", null, "PDF"],
+      ["Tutorial — editable .docx", null, WORDS+"CS496_Blockchain_Tutorials_Solved.docx", "DOCX"],
+    ],
+    slides:[
+      "_021_Blockchain Overview.pptx",
+      "_022_Bitcoin Proof of Work Algorithm.pptx",
+      "_023_How Bitcoin Works.pptx",
+      "_024_Ethereum How It Works -1.pptx",
+      "_025_Solidity By Example1.docx",
+      "_026_Ethereum Smart Contracts Practice Sheet.docx",
+      "_027Etheerim Proof of Stake.pptx",
+      "_028_Solana - Fastest Blockchain--Prroof of History .pptx",
+      "_029_PolkaDot  - an Emerging Blockchain Systems.pptx",
+    ],
+    videos:[
+      ["021_Blockchain_Overview.mp4","021","Blockchain Overview"],
+      ["022_Bitcoin_Proof_of_Work.mp4","022","Bitcoin Proof of Work"],
+      ["023_How_Bitcoin_Works.mp4","023","How Bitcoin Works"],
+      ["024_Ethereum__How_It_Works.mp4","024","Ethereum — How It Works"],
+      ["025_Solidity_By_Example.mp4","025","Solidity By Example"],
+      ["026_Smart_Contracts_Practice.mp4","026","Smart Contracts Practice"],
+      ["027_Etheerim_Proof_of_Stake.mp4","027","Ethereum Proof of Stake"],
+      ["028_Solana__The_Speed_Limit_of_Decentralization.mp4","028","Solana — Speed Limit of Decentralization"],
+    ],
+  },
+};
+
+const baseNoExt = f => f.replace(/\.(pptx|docx|pdf)$/i,'');
+const ext = f => { const m=f.match(/\.([a-z0-9]+)$/i); return m?m[1].toUpperCase():"FILE"; };
+const pdfForSlide = f => PDFDIR + baseNoExt(f) + ".pdf";
+const prettyName = f => baseNoExt(f).replace(/^_?(\d+)_?\s*/, '$1 · ');
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+
+const root = document.getElementById("modules");
+
+function videoBlock(key, videos){
+  if (!videos) return "";
+  return `<details>
+    <summary>▸ <span class="chev">▶</span> Videos<span class="count">${videos.length} clips</span></summary>
+    <div class="videos">
+      ${videos.map(([f,n,t])=>`
+        <div class="vid" data-src="${esc(VIDS+f)}" data-title="${esc(t)}">
+          <div class="num">▶ ${n}</div>
+          <div class="name">${esc(t)}</div>
+          <div class="play">▶</div>
+          <input type="checkbox" data-id="${key}-vid-${n}" />
+        </div>`).join("")}
+    </div>
+  </details>`;
+}
+
+for (const key of Object.keys(data)){
+  const m = data[key];
+
+  const slideItems = m.slides.map(f=>{
+    const pdf = pdfForSlide(f);
+    const id = `${key}-slide-${baseNoExt(f)}`;
+    return `<li data-id="${id}">
+      <input type="checkbox" data-id="${id}" />
+      <a class="name" data-pdf="${esc(pdf)}" data-title="${esc(prettyName(f))}" data-orig="${esc(SLIDES+f)}">${esc(prettyName(f))}</a>
+      <span class="pill">${ext(f)}</span>
+      <a class="raw" href="${encodeURI(SLIDES+f)}" download title="Download original">⬇</a>
+    </li>`;
+  }).join("");
+
+  const extraItems = m.extras.map(([label, pdf, dl, badge], i)=>{
+    const id = `${key}-extra-${i}`;
+    let nameAttrs = "";
+    if (pdf) nameAttrs = `data-pdf="${esc(pdf)}" data-title="${esc(label)}" data-orig="${esc(dl||pdf)}"`;
+    else     nameAttrs = `data-download="${esc(dl)}"`;
+    const dlIcon = dl ? `<a class="raw" href="${encodeURI(dl)}" download>⬇</a>` : "";
+    return `<li data-id="${id}">
+      <input type="checkbox" data-id="${id}" />
+      <a class="name" ${nameAttrs}>${esc(label)}</a>
+      <span class="pill">${badge}</span>
+      ${dlIcon}
+    </li>`;
+  }).join("");
+
+  const t = m.tutorial;
+  const tutId = `${key}-tut`;
+
+  root.insertAdjacentHTML("beforeend", `
+    <section class="module ${key}">
+      <div class="mh">
+        <div class="tag">${m.tag}</div>
+        <h2><span class="dot"></span>${m.name}</h2>
+      </div>
+      <div class="body">
+        ${m.guide ? `<a class="guide-card" href="${esc(m.guide)}" target="_blank" rel="noopener">
+          <div class="icon">🎓</div>
+          <div class="meta">
+            <div class="title">Ultimate Revision Guide</div>
+            <div class="sub">100% mark target · tutorials Q&amp;A + zero-gaps slide notes + quiz</div>
+          </div>
+          <span class="open">Open guide →</span>
+        </a>` : ""}
+        <div class="tutorial" data-pdf="${esc(t.pdf)}" data-title="${esc(t.title)}" data-orig="${esc(t.pdf)}" data-tutid="${tutId}">
+          <input type="checkbox" data-id="${tutId}" />
+          <div class="icon">📘</div>
+          <div class="meta">
+            <div class="title">${esc(t.title)}</div>
+            <div class="sub">${esc(t.sub)}</div>
+          </div>
+          <span class="open">Open inline →</span>
+        </div>
+
+        <details open>
+          <summary>▸ <span class="chev">▶</span> Cross-reference<span class="count">summary + word</span></summary>
+          <ul class="items">${extraItems}</ul>
+        </details>
+
+        <details>
+          <summary>▸ <span class="chev">▶</span> Source slides<span class="count">${m.slides.length} files</span></summary>
+          <ul class="items">${slideItems}</ul>
+        </details>
+
+        ${videoBlock(key, m.videos)}
+      </div>
+    </section>
+  `);
+}
+
+/* delegated click handling — avoids quoting issues with filenames */
+document.addEventListener("click", e=>{
+  if (e.target.matches('input[type=checkbox]')) { e.stopPropagation(); return; }
+  const a = e.target.closest("a.name");
+  if (a) {
+    if (a.dataset.pdf) { e.preventDefault(); openPdf(a.dataset.pdf, a.dataset.title, a.dataset.orig); return; }
+    if (a.dataset.download) { e.preventDefault(); triggerDownload(a.dataset.download); return; }
+  }
+  const tut = e.target.closest(".tutorial");
+  if (tut) {
+    openPdf(tut.dataset.pdf, tut.dataset.title, tut.dataset.orig);
+    const cb = tut.querySelector("input[type=checkbox]");
+    if (cb && !cb.checked) { cb.checked = true; cb.dispatchEvent(new Event("change")); }
+    return;
+  }
+  const v = e.target.closest(".vid");
+  if (v) { openVideo(v.dataset.src, v.dataset.title); return; }
+});
+
+/* persistence */
+const LS_KEY = "cs496-final-progress-v2";
+const load = ()=>{ try{return JSON.parse(localStorage.getItem(LS_KEY)||"{}")}catch{return{}} };
+const save = s => localStorage.setItem(LS_KEY, JSON.stringify(s));
+const state = load();
+const boxes = document.querySelectorAll('input[type=checkbox][data-id]');
+boxes.forEach(b=>{
+  if(state[b.dataset.id]) b.checked = true;
+  applyRowStyle(b);
+  b.addEventListener("change",()=>{
+    state[b.dataset.id] = b.checked; save(state); applyRowStyle(b); updateProgress();
+  });
+});
+function applyRowStyle(b){ const li = b.closest("li"); if(li) li.classList.toggle("done", b.checked); }
+function updateProgress(){
+  const total = boxes.length;
+  const done = [...boxes].filter(b=>b.checked).length;
+  const pct = total? Math.round(done*100/total) : 0;
+  document.getElementById("pct").textContent = `${done}/${total} · ${pct}%`;
+  document.getElementById("barFill").style.width = pct+"%";
+}
+updateProgress();
+function resetAll(){
+  if(!confirm("Clear all progress checkmarks?")) return;
+  localStorage.removeItem(LS_KEY);
+  boxes.forEach(b=>{b.checked=false; applyRowStyle(b)}); updateProgress();
+}
+
+/* viewer */
+const viewer = document.getElementById("viewer");
+const stage  = document.getElementById("vStage");
+let currentDl = null;
+
+function openPdf(pdfPath, title, originalPath){
+  currentDl = originalPath || pdfPath;
+  document.getElementById("vTitle").textContent = title;
+  stage.innerHTML = `<iframe src="${encodeURI(pdfPath)}#toolbar=1&navpanes=0"></iframe>`;
+  show();
+}
+function openVideo(src, title){
+  currentDl = src;
+  document.getElementById("vTitle").textContent = title;
+  stage.innerHTML = `<video controls autoplay src="${encodeURI(src)}"></video>`;
+  show();
+}
+function show(){ viewer.classList.add("on"); document.body.classList.add("viewing"); }
+function closeViewer(){
+  viewer.classList.remove("on"); document.body.classList.remove("viewing");
+  stage.innerHTML = ""; currentDl = null;
+}
+function triggerDownload(path){
+  const a = document.createElement("a"); a.href = encodeURI(path); a.download = ""; a.click();
+}
+function downloadCurrent(){ if(currentDl) triggerDownload(currentDl); }
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeViewer(); });
+
+/* file:// warning */
+if (location.protocol === "file:") document.getElementById("serverWarn").style.display = "block";
+</script>
+</body>
+</html>

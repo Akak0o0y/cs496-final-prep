@@ -1,0 +1,17 @@
+# Local conversion artefacts (text dumps used during build)
+_txt/
+
+# Conversion scripts (kept locally, not needed for deployment)
+_convert.ps1
+_convert_word.ps1
+_convert_docx2pdf.py
+_extract_docx.py
+
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editor caches
+.vscode/
+.idea/
