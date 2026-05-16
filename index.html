@@ -109,6 +109,50 @@
 
   footer{padding:30px 24px;text-align:center;color:var(--muted);font-size:11px}
   code{background:#1a1f2c;padding:1px 5px;border-radius:4px;font-size:11px}
+
+  /* ------ Mobile ------ */
+  @media (max-width: 720px){
+    header.top{padding:10px 14px;flex-wrap:wrap;gap:8px}
+    header.top h1{font-size:14px}
+    header.top .sub{font-size:11px}
+    header.top .progress{margin-left:auto;width:100%;justify-content:space-between}
+    .bar{flex:1;width:auto;max-width:none;margin:0 8px}
+    main{padding:14px}
+    .modules{grid-template-columns:1fr;gap:14px}
+    .module > .mh{padding:14px 14px 4px}
+    .module h2{font-size:16px}
+    .body{padding:10px 14px 14px;gap:10px}
+    .guide-card, .tutorial{padding:14px;gap:10px;flex-wrap:wrap}
+    .guide-card .icon, .tutorial .icon{font-size:24px}
+    .guide-card .title, .tutorial .title{font-size:15px}
+    .guide-card .sub, .tutorial .sub{font-size:11px}
+    .guide-card .open, .tutorial .open{font-size:11px;padding:5px 8px;width:100%;text-align:center;order:99}
+    summary{padding:9px 10px;font-size:12px}
+    ul.items li{padding:7px 6px;font-size:12px;gap:8px}
+    ul.items li .pill{font-size:9px;padding:1px 5px}
+    .videos{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));padding:8px;gap:8px}
+    .vid{padding:8px}
+    .vid .name{font-size:11px}
+    #viewer .vh{padding:8px 10px;gap:6px;flex-wrap:wrap}
+    #viewer .vh .t{font-size:12px;width:100%;order:-1}
+    #viewer .vh button{font-size:11px;padding:5px 9px;flex:1}
+  }
+  @media (max-width: 380px){
+    header.top h1{font-size:13px}
+    .guide-card .icon, .tutorial .icon{display:none}
+  }
+
+  /* Guide viewer responsive */
+  @media (max-width: 720px){
+    .wrap{padding:20px 14px 60px !important}
+    h1{font-size:22px !important}
+    h2{font-size:18px !important}
+    h3{font-size:16px !important}
+    body{font-size:14px !important}
+    table{font-size:12px !important}
+    th,td{padding:6px 7px !important}
+    pre{font-size:11px !important;padding:10px !important}
+  }
 </style>
 </head>
 <body>
