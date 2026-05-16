@@ -295,14 +295,14 @@ for (const key of Object.keys(data)){
         <h2><span class="dot"></span>${m.name}</h2>
       </div>
       <div class="body">
-        ${m.guide ? `<a class="guide-card" href="${esc(m.guide)}" target="_blank" rel="noopener">
+        ${m.guide ? `<div class="guide-card" data-guide="${esc(m.guide)}" data-title="Ultimate Revision Guide — ${esc(m.name)}">
           <div class="icon">🎓</div>
           <div class="meta">
             <div class="title">Ultimate Revision Guide</div>
             <div class="sub">100% mark target · tutorials Q&amp;A + zero-gaps slide notes + quiz</div>
           </div>
-          <span class="open">Open guide →</span>
-        </a>` : ""}
+          <span class="open">Open inline →</span>
+        </div>` : ""}
         <div class="tutorial" data-pdf="${esc(t.pdf)}" data-title="${esc(t.title)}" data-orig="${esc(t.pdf)}" data-tutid="${tutId}">
           <input type="checkbox" data-id="${tutId}" />
           <div class="icon">📘</div>
@@ -346,7 +346,16 @@ document.addEventListener("click", e=>{
   }
   const v = e.target.closest(".vid");
   if (v) { openVideo(v.dataset.src, v.dataset.title); return; }
+  const g = e.target.closest(".guide-card");
+  if (g) { openGuide(g.dataset.guide, g.dataset.title); return; }
 });
+
+function openGuide(url, title){
+  currentDl = null;
+  document.getElementById("vTitle").textContent = title;
+  stage.innerHTML = `<iframe src="${encodeURI(url)}"></iframe>`;
+  show();
+}
 
 /* persistence */
 const LS_KEY = "cs496-final-progress-v2";
