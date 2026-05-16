@@ -179,8 +179,9 @@
 <div id="viewer">
   <div class="vh">
     <span class="t" id="vTitle"></span>
-    <button onclick="downloadCurrent()">Download original</button>
-    <button onclick="closeViewer()">Close ✕ (Esc)</button>
+    <button onclick="openCurrentInTab()" id="vTabBtn">Open in tab</button>
+    <button onclick="downloadCurrent()">Download</button>
+    <button onclick="closeViewer()">Close ✕</button>
   </div>
   <div class="stage" id="vStage"></div>
 </div>
@@ -393,6 +394,13 @@ document.addEventListener("click", e=>{
 
 function openGuide(url, title){
   currentDl = null;
+  currentView = url;
+  // Guide is plain HTML; opens fine in iframe everywhere, but on mobile a real
+  // page is more comfortable for long reading.
+  if (isMobilePDF) {
+    window.open(encodeURI(url), "_blank");
+    return;
+  }
   document.getElementById("vTitle").textContent = title;
   stage.innerHTML = `<iframe src="${encodeURI(url)}"></iframe>`;
   show();
@@ -430,17 +438,30 @@ function resetAll(){
 const viewer = document.getElementById("viewer");
 const stage  = document.getElementById("vStage");
 let currentDl = null;
+let currentView = null;
+
+const isMobilePDF = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent);
 
 function openPdf(pdfPath, title, originalPath){
   currentDl = originalPath || pdfPath;
+  currentView = pdfPath;
+  // iOS/Android can't scroll PDFs inside iframes — open natively instead.
+  if (isMobilePDF) {
+    window.open(encodeURI(pdfPath), "_blank");
+    return;
+  }
   document.getElementById("vTitle").textContent = title;
   stage.innerHTML = `<iframe src="${encodeURI(pdfPath)}#toolbar=1&navpanes=0"></iframe>`;
   show();
 }
+function openCurrentInTab(){
+  if (currentView) window.open(encodeURI(currentView), "_blank");
+}
 function openVideo(src, title){
   currentDl = src;
+  currentView = src;
   document.getElementById("vTitle").textContent = title;
-  stage.innerHTML = `<video controls autoplay src="${encodeURI(src)}"></video>`;
+  stage.innerHTML = `<video controls autoplay playsinline src="${encodeURI(src)}"></video>`;
   show();
 }
 function show(){ viewer.classList.add("on"); document.body.classList.add("viewing"); }
